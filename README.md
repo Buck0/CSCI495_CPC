@@ -1,2 +1,2 @@
 # CSCI495_CPC
-Code Plagairism Checker for Systemss Analysis
+Code Plagiarism Checker for Systems Analysis
