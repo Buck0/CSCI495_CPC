@@ -3,13 +3,17 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
+#include <cstring>
 
 // Using the standard namespace to save time and to not have to type std:: before almost everything
 using namespace std;
 
-// The main functino that will house the user interface and will call every other function
+// The main function that will house the user interface and will call every other function
 int main(int argc, char *argv[]) {
 
+/*
+  // ***NOTE*** The following variable databaseItems is for use in a Linux environment with a shell script
   // This vector will house each filepath for each database entry
 	vector<string> databaseItems;
 
@@ -17,14 +21,95 @@ int main(int argc, char *argv[]) {
 	for(unsigned int i = 1; argv[i] != NULL; i++){
 		databaseItems.push_back(argv[i]);
 	}
-/* This is here solely for testing to ensure the database was passed in correctly
+// This is here solely for testing to ensure the database was passed in correctly
 	for(unsigned int i = 0; i < databaseItems.size(); i++){
-		cout << test[i];
+		cout << databaseItems[i];
 		cout << " ";
 	}
 
 	cout << endl;
-*/	
+// End of the Linux environment code
+*/
+
+// The following file contains the database information as per a batch file for a Windows environment
+// Using the batch file allows the cpcTemp.txt location to not have to be entered manually
+	ifstream fileIn;
+
+// This vector of string will hold the filepaths for each database entry
+	vector<string> databaseItems;
+
+// This string will take in the filepath from the text file
+	string fileName = "";
+
+// This command opens the file
+	fileIn.open("cpcTemp.txt");
+
+// This if else statement ensures that the file is opened as expected
+	if(fileIn){
+		fileIn >> fileName;
+	}
+// Theoretically, this else should never have to be called but it exists incase some unforseen error happens
+	else{
+		cout << "FATAL ERROR: cpcTemp.txt file not found, cannot find database, exiting program." << endl;
+		return 0;
+	}
+
+// This while loop will assign each filepath to a spot in the vector and will end when there are no more filepaths
+	while(fileIn){
+
+// This adds the filepath to the vector
+		databaseItems.push_back(fileName);
+
+// This takes in a new filepath if there is one or sets fileIn to false which will exit the while loop
+		fileIn >> fileName;
+	}
+
+// This closes the file properly
+	fileIn.close();
+/*
+// This code is here as a preliminary test to see if reading from the database works at all
+// 	this test code continues until the comment: "End of database read-test code"
+// Also of note, this test code does not necessarily reflect how the finaly code will function
+// 	and was based upon how the preliminary test database was made
+	ifstream fileIn2;
+
+	string testStr = "";
+
+// Since Windows puts the directories as entries by themselves, calling a specific place is not recommended
+// 	since the first few entries will only be the directories in the database folder. However, when
+// 	looking at the entire database comparison, having the directories listed will not pose any issues.
+// In fact, having the directories listed first actually helps tremendously in that we can append each
+// 	new database filename to the first subdirectory of the database which will likely be for the current year
+// The number in "[]" can be changed based on different tests but should not be changed to exceed databaseItems.size()
+	fileIn2.open(databaseItems[1].c_str());
+
+//	cout << "\n\nopen" << endl;
+//	cout << "\n\n\n" << endl;
+	if(fileIn2){
+		fileIn2 >> testStr;
+	}
+	while(fileIn2){
+		cout << testStr << " ";
+		fileIn2 >> testStr;
+	}
+	cout << "\n\nclose\n";
+	cout << "\n\n" << endl;
+
+	fileIn2.close();
+// End of database read-test code
+*/
+
+/*
+	// This is here solely for testing to ensure the database was passed in correctly
+		cout << "\n\n\n" << endl;
+		for(unsigned int i = 0; i < databaseItems.size(); i++){
+			cout << databaseItems[i];
+			cout << " ";
+		}
+
+		cout << "\n\n" << endl;
+*/
+
   // The following variables are used to take in the user's prompt for what code to execute
 	int userIn = 0;
 	string userStr = "";
@@ -84,7 +169,7 @@ int main(int argc, char *argv[]) {
 //		addToDatabase();
 		break;
 
-      // This case will ru nthe file/text to database comparison
+      // This case will run the file/text to database comparison
 		case 3:
       // Output for testing
 		cout << "\n\n\n" << endl;
@@ -104,7 +189,7 @@ int main(int argc, char *argv[]) {
 
   // This prints a friendly exit message to let the user know the program is closed
 	cout << "The program is now closing.\n" << endl;
-  
+
   // The program is now closed
   return 0;
 }
