@@ -13,7 +13,8 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
 /*
-  // ***NOTE*** The following variable databaseItems is for use in a Linux environment with a shell script
+  // ***NOTE*** The following section is for use in a Linux environment with a shell script
+  // 	The section ends at the comment: "End of the Linux environment code"
   // This vector will house each filepath for each database entry
 	vector<string> databaseItems;
 
