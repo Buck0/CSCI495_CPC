@@ -63,9 +63,9 @@ int main(int argc, char *argv[]) {
 // This command opens the file
 	fileIn.open("cpcTemp.txt");
 
-// This if else statement ensures that the file is opened as expected
+// This if else statement ensures that the file is opened as expected and gets the first filepath by line if so
 	if(fileIn){
-		fileIn >> fileName;
+		getline(fileIn, fileName);
 	}
 // Theoretically, this else should never have to be called but it exists incase some unforseen error happens
 	else{
@@ -79,8 +79,8 @@ int main(int argc, char *argv[]) {
 // This adds the filepath to the vector
 		databaseItems.push_back(fileName);
 
-// This takes in a new filepath if there is one or sets fileIn to false which will exit the while loop
-		fileIn >> fileName;
+// This takes in a new filepath by each line if there is one or sets fileIn to false which will exit the while loop
+		getline(fileIn, fileName);
 	}
 
 // This closes the file properly
