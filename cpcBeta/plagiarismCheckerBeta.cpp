@@ -24,7 +24,7 @@ bool addToDatabase(const int type, string fileInfo, string newFileName);
 // This function will compare two code files or excerpts
 void fileToFile();
 
-// This function will compare 
+// This function will compare
 void compareToDatabase();
 
 // This function reads in code files or excerpts
@@ -150,7 +150,7 @@ int main(int argc, char *argv[]) {
     // Taking in a string ensures that anything the user inputs will be technically valid while also allowing
     //    for error checking against the desired input
 	cin >> userStr;
-	
+
 	if (userStr.length() > 1) { userStr = "0"; }
 
     // Setting the first character as the user's true input since an int should not be compared to a string
@@ -164,19 +164,19 @@ int main(int argc, char *argv[]) {
     // The switch statement evaluates the user's input and determines what the user wants to do; if the user
     //    did not input something that is recognized, an error will display and the user will be prompted to try again
 	switch(userIn){
-		
+
       // This case sets the control for the loop to false so that the program can close
 		case 4:
 			cont = false;
 			break;
-			
+
       // This case will run the file/text to file/text comparison
 		case 1:
       // The function below is a placeholder for the actual function that will be called to execute this portion
       //    of the program
 			fileToFile();
 			break;
-			
+
       // This case will run the database addition
 		case 2:
 			addToDatabaseUI();
@@ -234,10 +234,19 @@ void addToDatabaseUI(){
 
 // This asks the user which operation they would like to do
 		cout << "\nWould you like to enter a text selection or a .txt or .java file as the student's code to add?\n";
+		cout << "Enter \"main_menu\" to return to the main menu of the program.\n";
 		cout << "Enter \'0\' for a text selection or \'1\' for a file: ";
 
 // This retrieves the user's input
 		cin >> in;
+
+// This will return the user to the main menu if they request to go back
+		if (in.compare("main_menu") == 0) {
+			cout << "\nThe program is now returning to the main menu.\n" << endl;
+			return;
+		}
+// If the user puts something too long it will automatically make the input invalid
+		if (in.length() > 1) { in = "2"; }
 
 // This assigns the user's input to the first character that was input since a string should
 // 	not be compared to an integer
@@ -255,13 +264,22 @@ void addToDatabaseUI(){
 // Additionally, it tells the user what the string is that will cause the input loop to exit
 			cout << "\nPlease paste the student's code to be added now\n";
 			cout << "Please paste the entire code or enter it one line at a time\n";
-			cout <<  "Please enter \"x9x\" on a new line after the end of the code to signify that you are done" << endl;
+			cout << "Please enter \"x9x\" on a new line after the end of the code to signify that you are done\n";
+			cout << "Enter \"main_menu\" before anything else to return to the main menu" << endl;
 
 // This clears any previous input from the cin stream so that getline can be used effectively
 			cin.ignore(256, '\n');
 
 // This is the code that actually gets the user's input
 			getline(cin, codeIn);
+
+// This will return the user to the main menu if they request to go back
+			if (codeIn.compare("main_menu") == 0) {
+// This tells the user that the program is going back to the main menu
+				cout << "\nThe program is now returning to the main menu.\n" << endl;
+// This returns to the main menu
+				return;
+			}
 
 // This adds the user's input to the holding variable and assumes that the user isn't wanting to add an empty file
 			studCode += codeIn;
@@ -300,9 +318,17 @@ void addToDatabaseUI(){
 // Thankfully the default for notepad and most things is ANSI so this should theoretically not be much of an issue
 			case 1:
 // This asks the user to enter the filename for the file to be copied
-			cout << "\nPlease enter the name of the file to be copied into the database now:" << endl;
+			cout << "\nPlease enter the name of the file to be copied into the database now\n";
+			cout << "Enter \"main_menu\" to return to the main menu" << endl;
 // This gets the user's inputs
 			cin >> codeIn;
+// This will return the user to the main menu if they request to go back
+			if (codeIn.compare("main_menu") == 0) {
+// This tells the user that the program is going back to the main menu
+				cout << "\nThe program is now returning to the main menu.\n" << endl;
+// This returns to the main menu
+				return;
+			}
 // This is a simple check to make sure the file exists
 			fileCheck.open(codeIn.c_str());
 // If fileCheck is true then the file exists and the program can continue
@@ -334,31 +360,79 @@ void addToDatabaseUI(){
 // This is the while part of the do while loop and will exit when contr is false
 	} while(contr);
 
+// This bool will help with filename verification making sure that the file does not already exist
+	bool flag = true;
+
+// This will hold the full path of the filename so that validity can be checked
+	string fullPath = "";
+
+// This loop will continue as long as the user keeps entering files that already exist
+// The loop will exit when an appropriate filename is given
+	do{
+
 // After getting either the code or the file name, the program asks the user to enter the name for the new file
 // 	The name for the file is asked to be in a specific format so that it will be easy to know some of the file's
 // 	attributes and contents, the number of retries for the course is to prevent accidental overwritting of previous
 // 	 coursework in the case that the student retakes the course
-	cout << "\nPlease enter the name for the new file.\n";
-	cout << "Enter the filename in the following format:\n";
-	cout << "StudentID_AssignmentNumber_NumberOfTimesRetryingTheCourse\n";
-	cout << "Example: \"123456_19_0\"\n" << endl;
+		cout << "\nPlease enter the name for the new file.\n";
+		cout << "Enter the filename in the following format:\n";
+		cout << "StudentID_AssignmentNumber_NumberOfTimesRetryingTheCourse\n";
+		cout << "Example: \"123456_19_0\"\n";
+		cout << "Alternatively, enter \"main_menu\" to return to the main menu" << endl;
 
 // This retieves the file name
-// As of right now, no filename verification is performed
-	cin >> fileName;
-	
-	bool flag;
-
-	// Make sure the file is added by repeatedly running addToDatabase until it is.
-	while (!flag) {
 		cin >> fileName;
-		
-		flag = addToDatabase(intIn, codeIn, fileName);
-	}
-	
+
+// This will return to the main menu if the user asks to
+		if(fileName.compare("main_menu") == 0){
+// The program tells the user that the program is going back to the main menu
+			cout << "\nThe program is now returning to the main menu.\n" << endl;
+// This returns to the main menu
+			return;
+		}
+
+// This makes sure that the potential new file has the correct path to be checked for validity
+		fullPath = databaseItems[0];
+		fullPath += '\\';
+		fullPath += fileName;
+		fullPath += ".java";
+
+// This checks to see if the file can be opened
+		ifstream f;
+
+		f.open(fullPath.c_str());
+// If it can then the program asks the user to choose another name for the file
+		if (f.good()) {
+			cout << "\nThis file already exists in the database. Please choose another name.\n" << endl;
+// This makes sure that the flag stays true so that the loop does not end
+			flag = true;
+		}
+// If the file was not found then it has an appropriate name for a new file
+		else{
+// The flag will be set to false so that the loop will exit
+			flag = false;
+		}
+		// Always properly close files whether or not they exist
+			f.close();
+	} while(flag);
+
+	// If the database addition returns true then the file was successfully added and a confirmation message is given
+		if(addToDatabase(intIn, codeIn, fileName)){
 	// Confirmation message so the user knows the file was added successfully
-	cout << "\nThe file was successfully added to the database.\n" << endl;
+			cout << "\nThe file was successfully added to the database\n" << endl;
 	// This exits this function and returns to the main UI
+			return;
+		}
+	// If the addition returns false then a message asking the user to retry is given and the addition UI is recursively called
+		else{
+	// This outputs the error messsage to the screen
+			cout << "\nThe file was not added, please try again\n" << endl;
+	// This makes the funstion call itself so that the user can try the addition again
+			addToDatabaseUI();
+	// This returns from the addToDatabaseUI function to the main UI
+			return;
+		}
+// The program should not get to this line but it is not good to have a function without a general return statement
 	return;
 }
 
@@ -376,12 +450,6 @@ bool addToDatabase(const int type, string fileInfo, string newFileName){
 	string contents = "";
 	string newContents = "";
 	string newName = "";
-	
-	ifstream f(newFileName.c_str());
-    if (f.good()) {
-		cout << "This file already exists in the database. Please choose another name.\n" << endl;
-		return false;
-	}
 
 // If the type is 1 then the addition is for an existing file
 	if(type == 1){
@@ -474,36 +542,36 @@ bool addToDatabase(const int type, string fileInfo, string newFileName){
 
 void fileToFile() {
 	vector<string> code1, code2, properties1, properties2;
-	
+
 	// Stores the first code in the vector code1 and properties in the vector properties1.
 	cout << "\nWould you like to enter a text selection or a .txt or .java file as the first code to add?\n";
 	cout << "Enter \'0\' for a text selection or \'1\' for a file: ";
-	
+
 	readInFileOrText(code1, properties1);
-	
+
 	// Stores the second code in the vector code2 and properties in the vector properties2.
 	cout << "\nWould you like to enter a text selection or a .txt or .java file as the second code to add?\n";
 	cout << "Enter \'0\' for a text selection or \'1\' for a file: ";
-	
+
 	readInFileOrText(code2, properties2);
-	
+
 	double matchCount = 0;
-	
+
 	if (code1.size() >= code2.size()) {
 		cout << "\n\nCode Excerpt 1:\n" << endl;
-		
+
 		for (unsigned int i = 1; i <= properties1.size(); i++) { cout << properties1[i-1] << endl; }
 		cout << endl;
-		
+
 		for (unsigned int i = 1; i <= code1.size(); i++) {
 			cout << "(" << i << ") " << code1[i-1] << endl;
 		}
-		
+
 		cout << "\n\nCode Excerpt 2:\n" << endl;
-		
+
 		for (unsigned int i = 1; i <= properties2.size(); i++) { cout << properties2[i-1] << endl; }
 		cout << endl;
-		
+
 		for (unsigned int i = 1; i <= code2.size(); i++) {
 			char c = ' ';
 			for (unsigned int j = 1; j <= code1.size(); j++) {
@@ -515,23 +583,23 @@ void fileToFile() {
 			}
 			cout << "(" << c << ") " << code2[i-1] << endl;
 		}
-		
+
 		cout << "\n\nPercentage match: " << (100*matchCount/code2.size()) << "%\n" << endl;
 	} else {
 		cout << "\n\nCode Excerpt 1:\n" << endl;
-		
+
 		for (unsigned int i = 1; i <= properties2.size(); i++) { cout << properties2[i-1] << endl; }
 		cout << endl;
-		
+
 		for (unsigned int i = 1; i <= code2.size(); i++) {
 			cout << "(" << i << ") " << code2[i-1] << endl;
 		}
-		
+
 		cout << "\n\nCode Excerpt 2:\n" << endl;
-		
+
 		for (unsigned int i = 1; i <= properties1.size(); i++) { cout << properties1[i-1] << endl; }
 		cout << endl;
-		
+
 		for (unsigned int i = 1; i <= code1.size(); i++) {
 			char c = ' ';
 			for (unsigned int j = 1; j <= code2.size(); j++) {
@@ -543,7 +611,7 @@ void fileToFile() {
 			}
 			cout << "(" << c << ") " << code1[i-1] << endl;
 		}
-		
+
 		cout << "\n\nPercentage match: " << (100*matchCount/code1.size()) << "%\n\n" << endl;
 	}
 }
@@ -551,20 +619,20 @@ void fileToFile() {
 void compareToDatabase() {
 	vector<string> code1, code2, properties1;
 	string codeIn;
-	
+
 	// Stores the first code in the vector code1 and properties in the vector properties1.
 	cout << "\nWould you like to enter a text selection or a .txt or .java file as the code to compare?\n";
 	cout << "Enter \'0\' for a text selection or \'1\' for a file: ";
-	
+
 	readInFileOrText(code1, properties1);
-	
+
 	double highestMatchPercent = 0.0;
 	string highestMatchName;
-	
+
 	for (unsigned int f = 0; f < databaseItems.size(); f++) {
 		if (databaseItems[f].substr(databaseItems[f].length() - 5, 5).compare(".java") != 0
 			&& databaseItems[f].substr(databaseItems[f].length() - 4, 4).compare(".txt") != 0) { continue; }
-		
+
 		ifstream fileCheck;
 		fileCheck.open(databaseItems[f]);
 
@@ -572,18 +640,18 @@ void compareToDatabase() {
 			fileCheck.close();
 			continue;
 		}
-		
+
 		getline(fileCheck, codeIn);
-			
+
 		while(fileCheck) {
 			if (!codeIn.empty()) { code2.push_back(codeIn); }
 			getline(fileCheck, codeIn);
 		}
-		
+
 		fileCheck.close();
-		
+
 		double matchCount = 0.0, matchPercent = 0.0;
-		
+
 		for (unsigned int i = 1; i <= code1.size(); i++) {
 			for (unsigned int j = 1; j <= code2.size(); j++) {
 				if (code1[i-1].compare(code2[j-1]) == 0 && !code1[i-1].empty()) {
@@ -592,55 +660,55 @@ void compareToDatabase() {
 				}
 			}
 		}
-			
+
 		matchPercent = 100*matchCount/code1.size();
-		
+
 		if (matchPercent > highestMatchPercent) {
 			highestMatchPercent = matchPercent;
 			highestMatchName = databaseItems[f];
 		}
 	}
-	
+
 	if (highestMatchPercent > 0.0) {
 		cout << "\nThe highest matched file's name:\n\n" << highestMatchName << "\n\nPercentage match: " << highestMatchPercent << "%\n\n" << endl;
 	} else {
 		cout << "\nThis file did not match any of the files in the database to any degree.\n\n" << endl;
 	}
-	
+
 	if (highestMatchPercent < 100.0) {
 		bool flag;
 		string fileName, entireCode;
-		
+
 		for (unsigned int i = 0; i < code1.size(); i++) {
 			entireCode += code1[i] + '\n';
 		}
-			
+
 		cout << "The code you entered will now be added to the database.\n";
 		cout << "Please enter the name for the new file.\n";
 		cout << "Enter the filename in the following format:\n";
 		cout << "StudentID_AssignmentNumber_NumberOfTimesRetryingTheCourse\n";
 		cout << "Example: \"123456_19_0\"\n" << endl;
-		
+
 		while (!flag) {
 			cin >> fileName;
 
 			flag = addToDatabase(0, entireCode, fileName);
 		}
-		
+
 		cout << "\nThe file was successfully added to the database.\n" << endl;
 	}
 }
 
 void readInFileOrText(vector<string> &code, vector<string> &properties) {
 	bool contr = true;
-	
+
 	do {
 		string in, fileName, codeIn;
 		ifstream fileCheck;
 		bool isCin = true;
 
 		cin >> in;
-		
+
 		// Make sure not to accept the input unless it is one character.
 		if (in.compare("0") == 0) {
 			cout << "\nPlease paste the first code to be added now\n";
@@ -656,7 +724,7 @@ void readInFileOrText(vector<string> &code, vector<string> &properties) {
 				getline(cin, codeIn);
 				if(codeIn.compare("x9x") == 0){ isCin = false; }
 			}
-			
+
 			contr = false;
 		} else if (in.compare("1") == 0) {
 			cout << "\nPlease enter the name of the file to compare:" << endl;
@@ -668,28 +736,28 @@ void readInFileOrText(vector<string> &code, vector<string> &properties) {
 				cout << "\nThe file that you entered does not exist; please try again." << endl;
 				break;
 			}
-			
+
 			properties.push_back("File Name: " + codeIn);
-			
+
 			// Below is my attempt at getting the created and last modified times.
 			// The FileTimeToSystemTime function crashed the program and I have yet to figure out why.
-			
+
 			/*
 			WIN32_FILE_ATTRIBUTE_DATA fileAttrs;
 			bool result = GetFileAttributesEx(codeIn.c_str(), GetFileExInfoStandard, &fileAttrs);
-			
+
 			if (result) {
 				LPSYSTEMTIME st = NULL, st2 = NULL;
-				
+
 				// Get creation time and add it to properties
 				FileTimeToSystemTime(&fileAttrs.ftCreationTime, st);
 				SystemTimeToTzSpecificLocalTime(NULL, st, st2);
-				
+
 				if (st2) {
 					string temp = string("Date Created: ") + to_string(st2->wMonth) + "/" + to_string(st2->wDay) + "/" + to_string(st2->wYear) + " " + to_string(st2->wHour) + ":" + to_string(st2->wMinute);
 					properties.push_back(temp);
 				}
-				
+
 				// Get modification time and add it to properties
 				FileTimeToSystemTime(&fileAttrs.ftLastWriteTime, st);
 				SystemTimeToTzSpecificLocalTime(NULL, st, st2);
@@ -699,14 +767,14 @@ void readInFileOrText(vector<string> &code, vector<string> &properties) {
 				}
 			}
 			*/
-			
+
 			getline(fileCheck, codeIn);
-			
+
 			while(fileCheck) {
 				if (!codeIn.empty()) { code.push_back(codeIn); }
 				getline(fileCheck, codeIn);
 			}
-			
+
 			fileCheck.close();
 			contr = false;
 		} else { cout << "\nYou entered something the program does not recognize; please try again." << endl; }
