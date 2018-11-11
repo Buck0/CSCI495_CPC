@@ -320,8 +320,10 @@ void addToDatabaseUI(){
 // This asks the user to enter the filename for the file to be copied
 			cout << "\nPlease enter the name of the file to be copied into the database now\n";
 			cout << "Enter \"main_menu\" to return to the main menu" << endl;
+// This allows the use of getline since it will other wise try to take in a return character
+			cin.ignore(256, '\n');
 // This gets the user's inputs
-			cin >> codeIn;
+			getline(cin, codeIn);
 // This will return the user to the main menu if they request to go back
 			if (codeIn.compare("main_menu") == 0) {
 // This tells the user that the program is going back to the main menu
@@ -381,7 +383,7 @@ void addToDatabaseUI(){
 		cout << "Alternatively, enter \"main_menu\" to return to the main menu" << endl;
 
 // This retieves the file name
-		cin >> fileName;
+		getline(cin, fileName);
 
 // This will return to the main menu if the user asks to
 		if(fileName.compare("main_menu") == 0){
