@@ -678,21 +678,21 @@ void compareToDatabase() {
 	}
 
 	if (highestMatchPercent < 100.0) {
-		bool flag;
+		bool flag = false;
 		string fileName, entireCode;
 
 		for (unsigned int i = 0; i < code1.size(); i++) {
 			entireCode += code1[i] + '\n';
 		}
 
-		cout << "The code you entered will now be added to the database.\n";
-		cout << "Please enter the name for the new file.\n";
-		cout << "Enter the filename in the following format:\n";
-		cout << "StudentID_AssignmentNumber_NumberOfTimesRetryingTheCourse\n";
-		cout << "Example: \"123456_19_0\"\n" << endl;
-
 		while (!flag) {
-			cin >> fileName;
+			cout << "The code you entered will now be added to the database.\n";
+			cout << "Please enter the name for the new file.\n";
+			cout << "Enter the filename in the following format:\n";
+			cout << "StudentID_AssignmentNumber_NumberOfTimesRetryingTheCourse\n";
+			cout << "Example: \"123456_19_0\"\n" << endl;
+
+			getline(cin, fileName);
 
 			flag = addToDatabase(0, entireCode, fileName);
 		}
@@ -730,7 +730,8 @@ void readInFileOrText(vector<string> &code, vector<string> &properties) {
 			contr = false;
 		} else if (in.compare("1") == 0) {
 			cout << "\nPlease enter the name of the file to compare:" << endl;
-			cin >> codeIn;
+			cin.ignore(256, '\n');
+			getline(cin, codeIn);
 			fileCheck.open(codeIn.c_str());
 
 			if(!fileCheck) {
