@@ -456,7 +456,7 @@ bool addToDatabase(const int type, string fileInfo, string newFileName){
 // If the type is 1 then the addition is for an existing file
 	if(type == 1){
 // This opens the input filestream
-		ifstream fileIn;
+		ifstream fileIn, fileExists;
 // This actually opens the file
 		fileIn.open(fileInfo.c_str());
 
@@ -485,6 +485,16 @@ bool addToDatabase(const int type, string fileInfo, string newFileName){
 		newName += newFileName;
 // This adds the correct file extension to the new file, the default being a java source code file
 		newName += ".java";
+		
+		// Check if the file already exists so we don't overwrite it!
+		fileExists.open(newName);
+		
+		if (fileExists) {
+			fileExists.close();
+			cout << "\nThis file already exists in the database. Please try again"
+			<< " and enter a different name for the new file.\n" << endl;
+			return false;
+		}
 
 // This outputs the path of the new file so that the user will know where it is located
 		cout << "\nThe path for the new file is: \"" << newName << "\"\n" << endl;
@@ -513,6 +523,7 @@ bool addToDatabase(const int type, string fileInfo, string newFileName){
 	}
 // If the type is not 1 and is 0 then a text addition will be performed
 	else if(type == 0){
+		ifstream fileExists;
 // This prepares the output file stream
 		ofstream newOut;
 // This adds the path of the first folder to the new filename
@@ -523,6 +534,17 @@ bool addToDatabase(const int type, string fileInfo, string newFileName){
 		newName += newFileName;
 // This adds the correct file extension to the new file, the default being a java source code file
 		newName += ".java";
+		
+		// Check if the file already exists so we don't overwrite it!
+		fileExists.open(newName);
+		
+		if (fileExists) {
+			fileExists.close();
+			cout << "\nThis file already exists in the database. Please try again"
+			<< " and enter a different name for the new file.\n" << endl;
+			return false;
+		}
+		
 // This displays the new filepath so that the user can see it
 		cout << "\nThe path for the new file is: \"" << newName << "\"\n" << endl;
 // This actually opens the new output file
@@ -616,6 +638,49 @@ void fileToFile() {
 
 		cout << "\n\nPercentage match: " << (100*matchCount/code1.size()) << "%\n\n" << endl;
 	}
+	
+	// Add both code files / excerpts to the database.
+	bool flag = false;
+	string fileName, entireCode;
+
+	for (unsigned int i = 0; i < code1.size(); i++) {
+		entireCode += code1[i] + '\n';
+	}
+
+	while (!flag) {
+		cout << "The first code you entered will now be added to the database.\n";
+		cout << "Please enter the name for the new file.\n";
+		cout << "Enter the filename in the following format:\n";
+		cout << "StudentID_AssignmentNumber_NumberOfTimesRetryingTheCourse\n";
+		cout << "Example: \"123456_19_0\"\n" << endl;
+
+		getline(cin, fileName);
+
+		flag = addToDatabase(0, entireCode, fileName);
+	}
+
+	cout << "\nThe file was successfully added to the database.\n\n" << endl;
+	
+	flag = false;
+	entireCode = "";
+
+	for (unsigned int i = 0; i < code2.size(); i++) {
+		entireCode += code2[i] + '\n';
+	}
+
+	while (!flag) {
+		cout << "The second code you entered will now be added to the database.\n";
+		cout << "Please enter the name for the new file.\n";
+		cout << "Enter the filename in the following format:\n";
+		cout << "StudentID_AssignmentNumber_NumberOfTimesRetryingTheCourse\n";
+		cout << "Example: \"123456_19_0\"\n" << endl;
+
+		getline(cin, fileName);
+
+		flag = addToDatabase(0, entireCode, fileName);
+	}
+
+	cout << "\nThe file was successfully added to the database.\n\n" << endl;
 }
 
 void compareToDatabase() {
@@ -733,11 +798,14 @@ void readInFileOrText(vector<string> &code, vector<string> &properties) {
 			cin.ignore(256, '\n');
 			getline(cin, codeIn);
 			fileCheck.open(codeIn.c_str());
-
-			if(!fileCheck) {
+			
+			while (!fileCheck) {
 				fileCheck.close();
 				cout << "\nThe file that you entered does not exist; please try again." << endl;
-				break;
+				
+				cin.ignore(256, '\n');
+				getline(cin, codeIn);
+				fileCheck.open(codeIn.c_str());
 			}
 
 			properties.push_back("File Name: " + codeIn);
