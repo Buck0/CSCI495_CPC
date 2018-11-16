@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <cstring>
+#include <sstream>
 #include <windows.h>
 
 // Using the standard namespace to save time and to not have to type std:: before almost everything
@@ -597,10 +598,12 @@ void fileToFile() {
 		cout << endl;
 
 		for (unsigned int i = 1; i <= code2.size(); i++) {
-			char c = ' ';
+			string c = " ";
 			for (unsigned int j = 1; j <= code1.size(); j++) {
 				if (code2[i-1].compare(code1[j-1]) == 0 && !code2[i-1].empty()) {
-					c = '0' + j;
+					stringstream ss;
+					ss << j;
+					c = ss.str();
 					matchCount++;
 					break;
 				}
@@ -625,10 +628,12 @@ void fileToFile() {
 		cout << endl;
 
 		for (unsigned int i = 1; i <= code1.size(); i++) {
-			char c = ' ';
+			string c = " ";
 			for (unsigned int j = 1; j <= code2.size(); j++) {
 				if (code1[i-1].compare(code2[j-1]) == 0 && !code1[i-1].empty()) {
-					c = '0' + j;
+					stringstream ss;
+					ss << j;
+					c = ss.str();
 					matchCount++;
 					break;
 				}
